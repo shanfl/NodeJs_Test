@@ -132,6 +132,15 @@ class Protocol
         }
         return null;
     }
+
+    getMsgType(ProtoMsgName)
+    {
+        const isHas = this._fullname.has(ProtoMsgName);
+        if (isHas)
+            return this._fullname.get(ProtoMsgName).lookupType(ProtoMsgName);
+        else
+            return null;
+    }
 }
 
 module.exports = Protocol

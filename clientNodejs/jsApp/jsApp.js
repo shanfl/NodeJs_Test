@@ -11,7 +11,7 @@ class jsApp extends EventEmitter
         super();  
         this._protoHandler = null;
         this._session = null;
-        this._idMsgMap = null;
+        this._idMsgMap = null;  // 消息id <-> package.msgname
         this.on('app_receive_msg', (id, msg) => {
             this.on_message(id, msg);
         })
@@ -37,6 +37,19 @@ jsApp.prototype.sendbuff = function (buff){
 
 jsApp.prototype.sendmsg = function (id,msg){
 
+}
+
+/*
+let message = Message.create({province:"hunan"});
+let errmsg = Message.verify(message);
+if(errmsg){
+  throw Error(errmsg);
+}
+*/
+jsApp.prototype.MsgGenerator = function (packname, msgname) {
+    //
+    let Message = this._protoHandler.getMsgType(packname + "." + msgname)
+    return Message
 }
 
 jsApp.prototype.on_message = function(id, msg){
@@ -125,6 +138,26 @@ jsApp.prototype.decode_raw_msg = function (data) {
         }
     }
     return retTable;
+}
+
+/*
+    msg:
+    {
+        protomsg,
+        id,
+        sn,
+        packagename,
+        msgname,
+        fullname,
+    }
+*/
+jsApp.prototype.encode_raw_msg = function (msg, isTransfer, isNeedZipped) {
+    let data = null;
+    if (msg.protomsg) {
+        if (msg.protomsg instanceof Buffer) data = msg.protomsg;
+        else if (msg.protomsg instanceof String) data = Buffer.from(msg.protomsg)
+        //else if(msg.protomsg instanceof Object) data = 
+    }
 }
 
 jsApp.prototype.register_id_msg_map = function(id, name){
